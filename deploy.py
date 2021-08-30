@@ -24,6 +24,8 @@ def deploy():
     p.wait()
     print(p.returncode)
 
+    
+# webhook
 app = Flask(__name__)
 
 @app.route('/ci', methods = ['POST'])
