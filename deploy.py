@@ -17,9 +17,11 @@ DIST_DIR = os.path.join(PROJECT_DIR, 'dist')
 RELEASE_DIR = '/home/van/front'
 
 
-def prepare():
+def prepare(tag):
     print("start clone")
-    g = git.Repo.clone_from(url=REPO_URL, to_path=PROJECT_DIR)
+    git.Repo.clone_from(url=REPO_URL, to_path=PROJECT_DIR)
+    os.chdir(PROJECT_DIR)
+    subprocess.call(f"git checkout tags/{tag}")
     print("pull over.")
 
 
@@ -35,9 +37,9 @@ def clean():
         shutil.rmtree(PROJECT_DIR)
 
 
-def deploy():
+def deploy(tag):
     clean()
-    prepare()
+    prepare(tag)
     build()
 
 
@@ -52,9 +54,14 @@ def ci():
         payload = json.loads(payload)
         ref = payload.get('ref')
         base_ref = payload.get('base_ref')
-        if ref.startswith('refs/tags') and base_ref == 'refs/heads/main':
-            print('start deploy')
-            deploy()
+        if ref.startswith('refs/tags'):
+            tag = ref.split("/")[-1]
+            if base_ref == 'refs/heads/dev':
+                print('start deploy dev')
+                deploy(tag)
+            else:
+                print('start deploy test')
+                deploy(tag)
         else:
             print('ignore commit')
     return 'ok'
