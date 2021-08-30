@@ -11,8 +11,10 @@ DIST_DIR = os.path.join(PROJECT_DIR, 'dist')
 RELEASE_DIR = ''
 
 def prepare():
+    print("start sync")
     g = git.cmd.Git(PROJECT_DIR)    
     g.pull()
+    print("pull over.")
 
 def deploy():
     prepare()
