@@ -1,19 +1,30 @@
 from flask import Flask
 from flask import request
 import json 
-from fabric.api import cd, run
+import git 
 import os
+import subprocess
 
-app = Flask(__name__)
 
 PROJECT_DIR = ''
 DIST_DIR = os.path.join(PROJECT_DIR, 'dist')
 RELEASE_DIR = ''
 
+def prepare():
+    g = git.cmd.Git(PROJECT_DIR)    
+    g.pull()
+
 def deploy():
-    with cd(PROJECT_DIR):
-        run("git pull")
-        run("")
+    prepare()
+    # cmd = ['cd', PROJECT_DIR, '&&','npm', 'run', 'build']
+    cmd = ['cd', PROJECT_DIR]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    for line in p.stdout:
+        print(line)
+    p.wait()
+    print(p.returncode)
+
+app = Flask(__name__)
 
 @app.route('/ci', methods = ['POST'])
 def ci():
