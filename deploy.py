@@ -14,8 +14,8 @@ PROJECT_DIR = '/home/alex/deploy/github_ci'
 # 编译生成路径
 DIST_DIR = os.path.join(PROJECT_DIR, 'dist')
 # 部署地址
-WEB_DEV_DIR = '/home/alex/workspace/web_dev'
-WEB_TEST_DIR = '/home/alex/workspace/web_test'
+WEB_DEV_SERVICE = 'web-dev'
+WEB_TEST_SERVICE = 'web-test'
 
 
 def prepare(tag):
@@ -25,13 +25,13 @@ def prepare(tag):
     print("pull over.")
 
 
-def build(dst):
+def build(target):
     print("start build...")
     os.chdir(PROJECT_DIR)
     # subprocess.call(
     # f"npm install && npm run build && cp {DIST_DIR}/* -rf {dst}", shell=True)
     subprocess.call(
-        f'docker-compose up -d --build -f {PROJECT_DIR}/docker-compose.yaml')
+        f'docker-compose -f {PROJECT_DIR}/docker-compose.yaml up --build -d {target}')
 
 
 def clean():
@@ -39,10 +39,10 @@ def clean():
         shutil.rmtree(PROJECT_DIR)
 
 
-def deploy(tag, dst):
+def deploy(tag, target):
     clean()
     prepare(tag)
-    build(dst)
+    build(target)
 
 
 # webhook
@@ -60,10 +60,10 @@ def webhook():
             tag = ref.split("/")[-1]
             if base_ref == 'refs/heads/dev':
                 print('start deploy dev')
-                deploy(tag, WEB_DEV_DIR)
+                deploy(tag, WEB_DEV_SERVICE)
             else:
                 print('start deploy test')
-                deploy(tag, WEB_TEST_DIR)
+                deploy(tag, WEB_TEST_SERVICE)
         else:
             print('ignore commit')
     return 'ok'
