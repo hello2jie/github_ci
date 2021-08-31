@@ -28,8 +28,8 @@ def prepare(tag):
 def build(target):
     print("start build...")
     os.chdir(PROJECT_DIR)
-    # subprocess.call(
-    # f"npm install && npm run build && cp {DIST_DIR}/* -rf {dst}", shell=True)
+    subprocess.call(
+        f"npm install && npm run build", shell=True)
     subprocess.call(
         f'docker-compose -f {PROJECT_DIR}/docker-compose.yaml up --build -d {target}')
 
@@ -71,4 +71,4 @@ def webhook():
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', debug=True)
-    deploy('v1.0.0', WEB_TEST_DIR)
+    deploy('v1.0.3', WEB_TEST_DIR)
