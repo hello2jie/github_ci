@@ -28,8 +28,10 @@ def prepare(tag):
 def build(dst):
     print("start build...")
     os.chdir(PROJECT_DIR)
+    # subprocess.call(
+    # f"npm install && npm run build && cp {DIST_DIR}/* -rf {dst}", shell=True)
     subprocess.call(
-        f"npm install && npm run build && cp {DIST_DIR}/* -rf {dst}", shell=True)
+        f'docker-compose up -d --build -f {PROJECT_DIR}/docker-compose.yaml')
 
 
 def clean():
