@@ -31,7 +31,7 @@ def build(target):
     subprocess.call(
         f"npm install && npm run build", shell=True)
     subprocess.call(
-        f'docker-compose -f {PROJECT_DIR}/docker-compose.yaml up --build -d {target}')
+        f'docker-compose -f {PROJECT_DIR}/docker-compose.yaml up --build -d {target}', shell=True)
 
 
 def clean():
